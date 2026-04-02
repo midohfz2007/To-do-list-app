@@ -46,7 +46,17 @@
                     </div>
                 </div>
             </form>
-
+<div class="filter-controls">
+    <input type="text" id="search-bar" placeholder="Search tasks..." autocomplete="off">
+    <select id="filter-category">
+    <option value="all">All Tasks</option>
+    <option value="active">Incomplete</option>
+    <option value="completed">Completed</option>
+    <option value="High">High Priority Only</option>
+    <option value="Medium">Medium Priority Only</option>
+    <option value="Low">Low Priority Only</option>
+</select>
+</div>
             <div class="todos-container">
                 <ul id="task-list"></ul>
                 <img src="Images/empty.png" id="empty-image" class="empty-image" alt="No tasks">
