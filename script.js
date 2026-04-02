@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressBar = document.getElementById("progress");
     const progressNumbers = document.getElementById("numbers");
     const emptyImage = document.getElementById("empty-image");
+    const searchBar = document.getElementById("search-bar");
+    const filterCategory = document.getElementById("filter-category");
 
     // --- DARK MODE LOGIC ---
     if (localStorage.getItem("theme") === "dark") {
@@ -23,19 +25,56 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("theme", isDark ? "dark" : "light");
     });
 
+    searchBar.addEventListener("input", (e) => {
+        const searchText = e.target.value.toLowerCase();
+        const tasks = taskList.querySelectorAll("li");
+
+        tasks.forEach(task => {
+            const title = task.querySelector(".task-title").innerText.toLowerCase();
+            // Show if it matches search, hide if it doesn't
+            task.style.display = title.includes(searchText) ? "flex" : "none";
+        });
+    });
+
+
+    filterCategory.addEventListener("change", (e) => {
+    const filterValue = e.target.value;
+    const tasks = taskList.querySelectorAll("li");
+
+    tasks.forEach(task => {
+        const isCompleted = task.classList.contains("completed");
+        const priority = task.querySelector("b").innerText; // Gets 'High', 'Medium', or 'Low'
+
+        if (filterValue === "all") {
+            task.style.display = "flex";
+        } else if (filterValue === "active") {
+            task.style.display = isCompleted ? "none" : "flex";
+        } else if (filterValue === "completed") {
+            task.style.display = isCompleted ? "flex" : "none";
+        } else {
+            // This handles filtering by Priority Tags
+            task.style.display = (priority === filterValue) ? "flex" : "none";
+        }
+    });
+});
+
     // --- TASK LOGIC ---
     addTaskForm.addEventListener("submit", (e) => {
         e.preventDefault();
         addTask();
     });
 
-    function addTask(text = "", completed = false, desc = "", date = "", priority = "Low") {
-        const tName = text || taskInput.value.trim();
-        const tDesc = desc || taskDesc.value.trim();
-        const tDate = date || taskDate.value;
-        const tPrio = priority || taskPrio.value;
+    function addTask(text = "", completed = false, desc = "", date = "", priority = "") {
+    // If 'text' is empty, it means a user is typing a NEW task.
+    // We must grab the CURRENT values from the inputs at this exact moment.
+    const tName = text || taskInput.value.trim();
+    const tDesc = desc || taskDesc.value.trim();
+    const tDate = date || taskDate.value;
+    
+    // FIX: Specifically grab the value from the dropdown if 'priority' wasn't passed in
+    const tPrio = priority || document.getElementById("task-priority").value;
 
-        if (tName === "") return;
+    if (tName === "") return;
 
         const li = document.createElement("li");
         li.className = `prio-${tPrio.toLowerCase()} ${completed ? 'completed' : ''}`;
@@ -44,13 +83,31 @@ document.addEventListener("DOMContentLoaded", () => {
             <input type="checkbox" class="checkbox" ${completed ? "checked" : ""}>
             <div class="task-content">
                 <span class="task-title">${tName}</span>
-                <small class="task-details">${tDesc ? tDesc + ' | ' : ''} Due: ${tDate || 'N/A'} | <b>${tPrio}</b></small>
-            </div>
+                    <small class="task-details">${tDesc ? tDesc + ' | ' : ''} Due: ${tDate || 'N/A'} | <b>${tPrio}</b></small>            </div>
             <div class="task-buttons">
                 <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
                 <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
+                <button class="add-sub-btn"><i class="fa-solid fa-plus-circle"></i> Sub</button>
             </div>
         `;
+
+
+        const subBtn = li.querySelector(".add-sub-btn");
+subBtn.addEventListener("click", () => {
+    const subText = prompt("Enter subtask:");
+    if (subText) {
+        const subContainer = li.querySelector(".subtask-container") || document.createElement("div");
+        subContainer.className = "subtask-container";
+        
+        const subItem = document.createElement("div");
+        subItem.className = "subtask-item";
+        subItem.innerHTML = `<input type="checkbox"> <span>${subText}</span>`;
+        
+        subContainer.appendChild(subItem);
+        li.appendChild(subContainer);
+        saveTasks(); // Remember to save the change!
+    }
+});
 
         // Checkbox toggle
         li.querySelector(".checkbox").addEventListener("change", (e) => {
