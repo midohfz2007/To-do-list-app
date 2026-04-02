@@ -142,6 +142,21 @@ body.dark-mode #theme-btn {
     color: #FFD700; /* Gold icon when in dark mode */
 }
 
+/* LIGHT MODE TASK TEXT FIX */
+/* This targets the text when the body is NOT in dark mode */
+body:not(.dark-mode) .task-title {
+    color: #333; /* Dark gray for the main title */
+}
+
+body:not(.dark-mode) .task-details {
+    color: #666; /* Medium gray for the description/date */
+}
+
+/* Also ensure subtasks are visible in Light Mode */
+body:not(.dark-mode) .subtask-item span {
+    color: #333;
+}
+
 /* List Items */
 li { 
     list-style: none; background: #f9f9f9; padding: 12px; border-radius: 12px; margin-bottom: 10px;
@@ -161,3 +176,67 @@ li.prio-low { border-left-color: #2ecc71; }
 
 .task-buttons button { background: none; border: none; cursor: pointer; margin-left: 5px; color: #777; }
 .empty-image { width: 100px; display: block; margin: 20px auto; }
+
+/* --- NEW FILTER STYLES --- */
+.filter-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#search-bar {
+    flex: 2;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    outline: none;
+}
+
+#filter-category {
+    flex: 1;
+    padding: 5px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+/* Ensure the text inside the dropdown is readable in dark/light mode */
+#filter-category option {
+    background: #222; /* Dark background so text is visible */
+    color: white;
+}
+
+.subtask-container {
+    margin-left: 45px;
+    margin-top: 10px;
+    padding-left: 10px;
+    border-left: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.subtask-item input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+}
+
+.add-subtask-btn {
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
